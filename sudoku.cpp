@@ -14,7 +14,7 @@ protected:
 public:
     Grid() : grid(GRID_SIZE, vector<int>(GRID_SIZE, 0)) {}
 
-    // Initialize grid with a string input (e.g. Sudoku puzzle)
+    // Initialize grid with a string input
     Grid(const string& input) {
         grid.resize(GRID_SIZE, vector<int>(GRID_SIZE, 0));
         for (int i = 0; i < GRID_SIZE * GRID_SIZE; ++i) {
@@ -22,12 +22,12 @@ public:
         }
     }
 
-    // Get a row from the grid
+    // Get row from the grid
     vector<int> getRow(int row) const {
         return grid[row];
     }
 
-    // Get a column from the grid
+    // Get column from the grid
     vector<int> getColumn(int col) const {
         vector<int> column(GRID_SIZE);
         for (int i = 0; i < GRID_SIZE; ++i) {
@@ -36,7 +36,7 @@ public:
         return column;
     }
 
-    // Get a box (3x3) from the grid based on row and column
+    // Get box from the grid based on row and column
     vector<int> getBox(int row, int col) const {
         vector<int> box;
         int startRow = (row / BOX_SIZE) * BOX_SIZE;
@@ -130,22 +130,25 @@ void testSudokuSolver() {
     cout << "Initial Sudoku Grid:" << endl;
     sudoku.display();
 
-    // Get inferences (candidates for each cell)
-    auto inferences = sudoku.getInference();
+    // Get inferences
+	vector<vector<set<int> > > inferences = sudoku.getInference();
 
     // Display candidates for each empty cell
-    cout << "\nInferences (candidates for each empty cell):" << endl;
-    for (int row = 0; row < GRID_SIZE; ++row) {
-        for (int col = 0; col < GRID_SIZE; ++col) {
-            if (sudoku.getRow(row)[col] == 0) {
-                cout << "Cell (" << row << "," << col << "): ";
-                for (int val : inferences[row][col]) {
-                    cout << val << " ";
-                }
-                cout << endl;
-            }
-        }
-    }
+	cout << "\nInferences (candidates for each empty cell):" << endl;
+	for (int row = 0; row < GRID_SIZE; ++row) {
+	    for (int col = 0; col < GRID_SIZE; ++col) {
+	        if (sudoku.getRow(row)[col] == 0) {
+	            cout << "Cell (" << row << "," << col << "): ";
+	            // 使用迭代器遍历 inferences[row][col]
+	            std::set<int>::const_iterator it = inferences[row][col].begin();
+	            while (it != inferences[row][col].end()) {
+	                cout << *it << " ";
+	                ++it;
+	            }
+	            cout << endl;
+	        }
+	    }
+	}
 
     // Clone test
     Sudoku clonedSudoku = sudoku.clone();
